@@ -37,6 +37,10 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     });
   }
 
+  void setOnShowCaseFinish(VoidCallback onFinish) {
+    ShowCaseOnFinish._onShowCaseFinish = onFinish;
+  }
+
   void completed(GlobalKey id) {
     if (ids != null && ids[activeWidgetId] == id) {
       setState(() {
