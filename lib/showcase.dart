@@ -5,6 +5,7 @@ import 'package:showcaseview/custom_paint.dart';
 import 'get_position.dart';
 import 'layout_overlays.dart';
 import 'tooltip_widget.dart';
+typedef OverlayCallback = Future<bool> Function();
 
 class Showcase extends StatefulWidget {
   final Widget child;
@@ -25,6 +26,8 @@ class Showcase extends StatefulWidget {
   final Duration animationDuration;
   final VoidCallback onToolTipClick;
   final VoidCallback onTargetClick;
+  final OverlayCallback overlayCallback;
+  final bool overLayCallbackBool;
   final bool disposeOnTap;
 
   const Showcase(
@@ -42,6 +45,8 @@ class Showcase extends StatefulWidget {
       this.showArrow = true,
       this.onTargetClick,
       this.disposeOnTap,
+      this.overlayCallback,
+      this.overLayCallbackBool = false,
       this.animationDuration = const Duration(milliseconds: 2000)})
       : height = null,
         width = null,
@@ -90,6 +95,8 @@ class Showcase extends StatefulWidget {
       this.textColor = Colors.black,
       this.onTargetClick,
       this.disposeOnTap,
+      this.overlayCallback,
+      this.overLayCallbackBool = false,
       this.animationDuration = const Duration(milliseconds: 2000)})
       : this.showArrow = false,
         this.onToolTipClick = null,
@@ -180,9 +187,13 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     );
   }
 
-  _nextIfAny() {
+  _nextIfAny()async {
+    if(widget.overLayCallbackBool){
+     await widget.overlayCallback();
+    }
     ShowCaseWidget.of(context).completed(widget.key);
     _slideAnimationController.forward();
+
   }
 
   _getOnTargetTap() {
@@ -264,6 +275,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
               contentWidth: widget.width,
               onTooltipTap: _getOnTooltipTap(),
             ),
+
           ],
         ),
       );
