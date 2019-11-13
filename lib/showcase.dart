@@ -5,6 +5,7 @@ import 'package:showcaseview/custom_paint.dart';
 import 'get_position.dart';
 import 'layout_overlays.dart';
 import 'tooltip_widget.dart';
+
 typedef OverlayCallback = Future<bool> Function();
 
 class Showcase extends StatefulWidget {
@@ -30,35 +31,34 @@ class Showcase extends StatefulWidget {
   final bool overLayCallbackBool;
   final bool disposeOnTap;
 
-  const Showcase(
-      {@required this.key,
-      @required this.child,
-      this.title,
-      @required this.description,
-      this.shapeBorder,
-      this.overlayColor = Colors.black,
-      this.overlayOpacity = 0.75,
-      this.titleTextStyle,
-      this.descTextStyle,
-      this.showcaseBackgroundColor = Colors.white,
-      this.textColor = Colors.black,
-      this.showArrow = true,
-      this.onTargetClick,
-      this.disposeOnTap,
-      this.overlayCallback,
-      this.overLayCallbackBool = false,
-      this.animationDuration = const Duration(milliseconds: 2000)})
+  const Showcase({@required this.key,
+    @required this.child,
+    this.title,
+    @required this.description,
+    this.shapeBorder,
+    this.overlayColor = Colors.black,
+    this.overlayOpacity = 0.75,
+    this.titleTextStyle,
+    this.descTextStyle,
+    this.showcaseBackgroundColor = Colors.white,
+    this.textColor = Colors.black,
+    this.showArrow = true,
+    this.onTargetClick,
+    this.disposeOnTap,
+    this.overlayCallback,
+    this.overLayCallbackBool = false,
+    this.animationDuration = const Duration(milliseconds: 2000)})
       : height = null,
         width = null,
         container = null,
         this.onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
-            "overlay opacity should be >= 0.0 and <= 1.0."),
+        "overlay opacity should be >= 0.0 and <= 1.0."),
         assert(
-            onTargetClick == null
-                ? true
-                : (disposeOnTap == null ? false : true),
-            "disposeOnTap is required if you're using onTargetClick"),
+        onTargetClick == null
+            ? true
+            : (disposeOnTap == null ? false : true),
+        "disposeOnTap is required if you're using onTargetClick"),
         assert(
         disposeOnTap == null
             ? true
@@ -78,30 +78,29 @@ class Showcase extends StatefulWidget {
             shapeBorder != null ||
             animationDuration != null);
 
-  const Showcase.withWidget(
-      {this.key,
-      @required this.child,
-      @required this.container,
-      @required this.height,
-      @required this.width,
-      this.title,
-      this.description,
-      this.shapeBorder,
-      this.overlayColor = Colors.black,
-      this.overlayOpacity = 0.75,
-      this.titleTextStyle,
-      this.descTextStyle,
-      this.showcaseBackgroundColor = Colors.white,
-      this.textColor = Colors.black,
-      this.onTargetClick,
-      this.disposeOnTap,
-      this.overlayCallback,
-      this.overLayCallbackBool = false,
-      this.animationDuration = const Duration(milliseconds: 2000)})
+  const Showcase.withWidget({this.key,
+    @required this.child,
+    @required this.container,
+    @required this.height,
+    @required this.width,
+    this.title,
+    this.description,
+    this.shapeBorder,
+    this.overlayColor = Colors.black,
+    this.overlayOpacity = 0.75,
+    this.titleTextStyle,
+    this.descTextStyle,
+    this.showcaseBackgroundColor = Colors.white,
+    this.textColor = Colors.black,
+    this.onTargetClick,
+    this.disposeOnTap,
+    this.overlayCallback,
+    this.overLayCallbackBool = false,
+    this.animationDuration = const Duration(milliseconds: 2000)})
       : this.showArrow = false,
         this.onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
-            "overlay opacity should be >= 0.0 and <= 1.0."),
+        "overlay opacity should be >= 0.0 and <= 1.0."),
         assert(key != null ||
             child != null ||
             title != null ||
@@ -133,7 +132,8 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     _slideAnimationController = AnimationController(
       duration: widget.animationDuration,
       vsync: this,
-    )..addStatusListener((AnimationStatus status) {
+    )
+      ..addStatusListener((AnimationStatus status) {
         if (status == AnimationStatus.completed) {
           _slideAnimationController.reverse();
         }
@@ -178,7 +178,9 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    Size size = MediaQuery
+        .of(context)
+        .size;
     return AnchoredOverlay(
       overlayBuilder: (BuildContext context, Rect rectBound, Offset offset) =>
           buildOverlayOnTarget(offset, rectBound.size, rectBound, size),
@@ -187,13 +189,12 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     );
   }
 
-  _nextIfAny()async {
-    if(widget.overLayCallbackBool){
-     await widget.overlayCallback();
+  _nextIfAny() async {
+    if (widget.overLayCallbackBool) {
+      await widget.overlayCallback();
     }
     ShowCaseWidget.of(context).completed(widget.key);
     _slideAnimationController.forward();
-
   }
 
   _getOnTargetTap() {
@@ -201,11 +202,11 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
       return widget.onTargetClick == null
           ? () {
         ShowCaseWidget.of(context).dismiss();
-            }
+      }
           : () {
         ShowCaseWidget.of(context).dismiss();
-              widget.onTargetClick();
-            };
+        widget.onTargetClick();
+      };
     } else {
       return widget.onTargetClick ?? _nextIfAny;
     }
@@ -216,22 +217,20 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
       return widget.onToolTipClick == null
           ? () {
         ShowCaseWidget.of(context).dismiss();
-            }
+      }
           : () {
         ShowCaseWidget.of(context).dismiss();
-              widget.onToolTipClick();
-            };
+        widget.onToolTipClick();
+      };
     } else {
       return widget.onToolTipClick ?? () {};
     }
   }
 
-  buildOverlayOnTarget(
-    Offset offset,
-    Size size,
-    Rect rectBound,
-    Size screenSize,
-  ) =>
+  buildOverlayOnTarget(Offset offset,
+      Size size,
+      Rect rectBound,
+      Size screenSize,) =>
       Visibility(
         visible: _showShowCase,
         maintainAnimation: true,
@@ -241,8 +240,14 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
             GestureDetector(
               onTap: _nextIfAny,
               child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
+                height: MediaQuery
+                    .of(context)
+                    .size
+                    .height,
                 child: CustomPaint(
                   painter: ShapePainter(
                       opacity: widget.overlayOpacity,
@@ -275,7 +280,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
               contentWidth: widget.width,
               onTooltipTap: _getOnTooltipTap(),
             ),
-
+            new SkipButtonClass(_showShowCase, context)
           ],
         ),
       );
@@ -321,5 +326,40 @@ class _TargetWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class SkipButtonClass extends StatelessWidget {
+  bool _showShowCase;
+  BuildContext contextForDismiss;
+
+  SkipButtonClass(this._showShowCase, this.contextForDismiss);
+
+  @override
+  Widget build(BuildContext context) {
+    return _showShowCase ? Positioned(
+      top: (MediaQuery
+          .of(context)
+          .size
+          .height - 70),
+      left: 100.0,
+      right: 100.0,
+      child: new Material(
+          color: Colors.transparent,
+          child: new GestureDetector(onTap: () {
+            ShowCaseWidget.of(contextForDismiss).dismiss();
+          }, child: new Container(
+            height: 50.0,
+            color: Color(0xff209286),
+            alignment: Alignment.center,
+            width: MediaQuery
+                .of(context)
+                .size
+                .width,
+            child: new Text("Skip".toUpperCase(),
+              style: new TextStyle(color: Colors.orange, fontSize: 18.0),),
+          ),)
+
+      ),) : new Container();
   }
 }
