@@ -5,6 +5,7 @@ import 'package:showcaseview/custom_paint.dart';
 import 'get_position.dart';
 import 'layout_overlays.dart';
 import 'tooltip_widget.dart';
+import 'dart:ui'as ui;
 
 typedef OverlayCallback = Future<bool> Function();
 
@@ -124,6 +125,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
   AnimationController _slideAnimationController;
 
   GetPosition position;
+
 
   @override
   void initState() {
@@ -248,12 +250,25 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
                     .of(context)
                     .size
                     .height,
-                child: CustomPaint(
-                  painter: ShapePainter(
-                      opacity: widget.overlayOpacity,
-                      rect: position.getRect(),
-                      shapeBorder: widget.shapeBorder,
-                      color: widget.overlayColor),
+                child:Stack(
+                  children: <Widget>[
+                    ClipPath(
+                      clipper: _CoachMarkClipper(position.getRect()),
+                      child: BackdropFilter(
+                        filter: ui.ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
+                        child: Container(
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ),
+                    CustomPaint(
+                      painter: ShapePainter(
+                          opacity: widget.overlayOpacity,
+                          rect: position.getRect(),
+                          shapeBorder: widget.shapeBorder,
+                          color: widget.overlayColor),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -350,16 +365,37 @@ class SkipButtonClass extends StatelessWidget {
             ShowCaseWidget.of(contextForDismiss).dismiss();
           }, child: new Container(
             height: 50.0,
-            color: Color(0xff209286),
+            color: Colors.transparent,
             alignment: Alignment.center,
             width: MediaQuery
                 .of(context)
                 .size
                 .width,
-            child: new Text("Skip".toUpperCase(),
-              style: new TextStyle(color: Colors.orange, fontSize: 18.0),),
-          ),)
+            child: new Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+            new Text("Skip",
+              style: new TextStyle(color: Colors.white, fontSize: 20.0),),
+                new SizedBox(width: 5.0,),
+                new Icon(Icons.arrow_forward,color: Colors.white,size: 18.0,)
+                ]
+          ),
+            ))
 
       ),) : new Container();
   }
+}
+
+class _CoachMarkClipper extends CustomClipper<Path> {
+  final Rect rect;
+
+  _CoachMarkClipper(this.rect);
+
+  @override
+  Path getClip(Size size) {
+    return Path.combine(PathOperation.difference, Path()..addRect(Offset.zero & size), Path()..addRect(rect));
+  }
+
+  @override
+  bool shouldReclip(_CoachMarkClipper old) => rect != old.rect;
 }
