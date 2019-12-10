@@ -7,6 +7,7 @@ class ToolTipWidget extends StatelessWidget {
   final Size screenSize;
   final String title;
   final String description;
+  final String widgetPosition;
   final Animation<double> animationOffset;
   final TextStyle titleTextStyle;
   final TextStyle descTextStyle;
@@ -25,6 +26,7 @@ class ToolTipWidget extends StatelessWidget {
     this.screenSize,
     this.title,
     this.description,
+    this.widgetPosition,
     this.animationOffset,
     this.titleTextStyle,
     this.descTextStyle,
@@ -62,6 +64,9 @@ class ToolTipWidget extends StatelessWidget {
       return descriptionLength + 10;
     }
   }
+
+
+
 
   bool _isLeft() {
     double screenWidth = screenSize.width / 3;
@@ -114,8 +119,100 @@ class ToolTipWidget extends StatelessWidget {
     return space;
   }
 
+  double customPositionDx ,customPositionDy;
+
+  double _getContentWidth() {
+    return contentWidth + 10.0;
+  }
+
+  double _getContentLeft() {
+    if (_isLeft()) {
+      double leftPadding = position.getCenter() - (_getContentWidth() * 0.1);
+      if (leftPadding + _getContentWidth()> screenSize.width) {
+        leftPadding = (screenSize.width - 20) - _getContentWidth();
+      }
+      if (leftPadding < 20) {
+        leftPadding = 14;
+      }
+      return leftPadding;
+    } else if (!(_isRight())) {
+      return position.getCenter() - (_getContentWidth() * 0.5);
+    } else {
+      return null;
+    }
+  }
+
+  double _getContentRight() {
+    if (_isRight()) {
+      double rightPadding = position.getCenter() + (_getContentWidth() / 2);
+      if (rightPadding + _getContentWidth() > screenSize.width) {
+        rightPadding = 14;
+      }
+      return rightPadding;
+    } else if (!(_isLeft())) {
+      return position.getCenter() - (_getContentWidth() * 0.5);
+    } else {
+      return null;
+    }
+  }
+
+  calculateWidgetPosition(String widgetPositionText){
+    switch(widgetPositionText){
+
+      case "top-center":{
+      customPositionDx = position.getLeft();
+      customPositionDy = position.getTop() - 200.0;
+        break ;
+      }
+      case "top-left":{
+        customPositionDx = position.getLeft();
+        customPositionDy  =  position.getTop() - contentHeight ;
+        break ;
+      }
+      case "top-right":{
+        break ;
+      }
+      case "left-top":{
+        customPositionDx = position.getLeft() - (contentWidth *  3 + 20.0);
+        customPositionDy  =  position.getTop() - 20.0;
+        break ;
+      }
+      case "left-left":{
+        break ;
+      }
+      case "left-right":{
+        break ;
+      }
+      case "right-top":{
+        customPositionDx = position.getRight() + 5.0;
+        customPositionDy  =  position.getTop() - 20.0;
+        break ;
+      }
+      case "right-left":{
+        break ;
+      }
+      case "right-right":{
+        break ;
+      }
+      case "bottom-center":{
+        customPositionDx = position.getLeft();
+        customPositionDy = position.getBottom();
+        break ;
+      }
+      case "bottom-left":{
+        break ;
+      }
+      case "bottom-right":{
+        break ;
+      }
+
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    calculateWidgetPosition(widgetPosition);
+
     final contentOrientation = findPositionForContent(offset);
     final contentOffsetMultiplier = contentOrientation == "BELOW" ? 1.0 : -1.0;
     isArrowUp = contentOffsetMultiplier == 1.0 ? true : false;
@@ -209,8 +306,8 @@ class ToolTipWidget extends StatelessWidget {
       return Stack(
         children: <Widget>[
           Positioned(
-            left: _getSpace(),
-            top: contentY - 10,
+            left: customPositionDx,
+            top: customPositionDy,
             child: FractionalTranslation(
               translation: Offset(0.0, contentFractionalOffset),
               child: SlideTransition(
@@ -228,7 +325,7 @@ class ToolTipWidget extends StatelessWidget {
                       ),
                       color: Colors.transparent,
                       child: Center(
-                        child: container,
+                        child:container,
                       ),
                     ),
                   ),
@@ -268,4 +365,6 @@ class ToolTipWidget extends StatelessWidget {
       ),
     );
   }
+
+
 }
