@@ -12,6 +12,7 @@ typedef OverlayCallback = Future<bool> Function();
 class Showcase extends StatefulWidget {
   final Widget child;
   final String title;
+  final String widgetPosition;
   final String description;
   final ShapeBorder shapeBorder;
   final TextStyle titleTextStyle;
@@ -35,6 +36,7 @@ class Showcase extends StatefulWidget {
   const Showcase({@required this.key,
     @required this.child,
     this.title,
+    this.widgetPosition,
     @required this.description,
     this.shapeBorder,
     this.overlayColor = Colors.black,
@@ -86,6 +88,7 @@ class Showcase extends StatefulWidget {
     @required this.width,
     this.title,
     this.description,
+    this.widgetPosition,
     this.shapeBorder,
     this.overlayColor = Colors.black,
     this.overlayOpacity = 0.75,
@@ -279,6 +282,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
               shapeBorder: widget.shapeBorder,
             ),
             ToolTipWidget(
+              widgetPosition: widget.widgetPosition,
               position: position,
               offset: offset,
               screenSize: screenSize,
